@@ -31,12 +31,13 @@ struct LevelsView: View {
                     
                     .frame(width:geometry.size.height*0.15)
                     Scrolla(livello:livello)
-                        .frame(width:UIScreen.main.bounds.size.width, height:UIScreen.main.bounds.size.height * 0.91)
+                        .frame(width:UIScreen.main.bounds.size.width, height:UIScreen.main.bounds.size.height * 0.7)
                     
                 }.edgesIgnoringSafeArea(.all)
                 
+                    .padding(.bottom,UIScreen.main.bounds.size.height * 0.22)
+
             } .frame(width:UIScreen.main.bounds.size.width, height:UIScreen.main.bounds.size.height)
-            
         }.navigationBarBackButtonHidden(true)
         
     }
