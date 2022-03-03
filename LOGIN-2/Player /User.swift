@@ -64,6 +64,13 @@ public class User: Identifiable{
         usernameLocal = username
     }
     
+    public func addPowers(brk: Int, ifelse: Int, loop: Int, rtn: Int){
+        quantity[0] = quantity[0] + brk
+        quantity[1] = quantity[1] + ifelse
+        quantity[2] = quantity[2] + loop
+        quantity[3] = quantity[3] + rtn
+    }
+    
     public func printUser(){
         print("USERNAME: " + user[0].username)
         print(" POINTS: " + String(describing: user[0].points) )
@@ -211,7 +218,42 @@ public class User: Identifiable{
     }
     
     
-    
+    public func updatePowers(){
+        let request = NSMutableURLRequest(url: NSURL(string:
+                                                        "https://quizcode.altervista.org/API/user/update_user_info.php")! as URL)
+        request.httpMethod = "POST"
+        
+        
+        let postBreak = "break= \(quantity[0])"
+        let postIfelse = "if_else= \(quantity[1])"
+        let postLoop = "loop= \(quantity[2])"
+        let postReturn = "return= \(quantity[3])"
+        let postString = postBreak + "&" + postIfelse + "&" + postLoop + "&" + postReturn
+        
+        request.httpBody = postString.data(using: String.Encoding.utf8)
+        
+        
+        let task = URLSession.shared.dataTask(with: request as URLRequest) {
+            data, response, error in
+            
+            if error != nil {
+                print("error=\(String(describing: error))")
+                return
+            }
+            
+            
+            if let data = data {
+                let jsonDecoder = JSONDecoder()
+                do {
+                    let parsedJSON = try jsonDecoder.decode(Entry.self, from: data)
+                    
+                } catch {
+                    print(error)
+                }
+            }
+        }
+        task.resume()
+    }
     
     
 }
