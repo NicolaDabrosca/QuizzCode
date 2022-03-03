@@ -41,14 +41,32 @@ public class User: Identifiable{
     public init() {}
     
     
+    private func setLevel(win: Int, lose: Int){
+        var crit = UserDefaults.standard.integer(forKey: "crit")
+        var newCrit = UserDefaults.standard.integer(forKey: "newCrit")
+        
+        if((win + lose)%crit == 0){
+            user[0].level += 1
+            if(newCrit == 0){
+                newCrit += 1
+            }
+            crit += newCrit
+            newCrit = crit/4
+            
+            UserDefaults.standard.set(crit, forKey: "crit")
+            UserDefaults.standard.set(newCrit, forKey: "newCrit")
+
+        }
+        
+        
+    }
+    
     public func setUserInfo(points:Int,record:Int,win:Int,lose:Int){
         self.user[0].points = points
         self.user[0].record = record
         self.user[0].win = win
         self.user[0].lose = lose
-        print("AGGIORNAMENTO ****************************")
-        print("")
-        printUser()
+        setLevel(win: win, lose: lose)
     }
     
     public var quantity:[Int] = []
@@ -113,7 +131,10 @@ public class User: Identifiable{
                     self.user.insert(parsedJSON.utente, at: 0)
                     let array = self.user[0].quantity.components(separatedBy: ", ")
                     self.quantity = array.map { Int($0)!} // [1, 2, 10]
-
+                    if(self.user[0].level == 1){
+                        UserDefaults.standard.set(3, forKey: "crit")
+                        UserDefaults.standard.set(0, forKey: "newCrit")
+                    }
                     self.printUser()
                 } catch {
                     print(error)
