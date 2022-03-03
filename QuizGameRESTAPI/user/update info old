@@ -1,0 +1,68 @@
+<?php
+include_once '../connection/connection.php';
+include_once '../function/function.php';
+
+
+$response = array();
+
+if(checkParameters(array('username','points','record','win','lose','level'))) {
+  $username = $_POST['username'];
+$points = $_POST['points'];
+$record = $_POST['record'];
+$win = $_POST['win'];
+$lose = $_POST['lose'];
+$level = $_POST['level'];
+
+
+  // checking if the user is already exist with this username or email
+  $stmt = $conn->prepare("UPDATE user
+                          SET points = points + ?,record = ?,
+                              win = ?,lose = ?,level = ?
+                          WHERE username =  ? ");
+  $stmt->bind_param("iiiiis",$points,$record,$win,$lose,$level, $username);
+
+
+  //if the user already exist in the database
+  if($stmt->execute() ) {
+    $stmt = $conn->prepare("SELECT user,points,record,win,lose,level,
+      GROUP_CONCAT(power SEPARATOR ', ') AS powers, GROUP_CONCAT(quantity SEPARATOR ', ') AS quantity
+      FROM user JOIN bonus ON (username = user)
+      WHERE username = ?");
+        $stmt->bind_param("s",$username);
+        $stmt->execute();
+        $stmt->bind_result($username, $points, $record, $win,
+                           $lose, $level, $power, $quantity);
+        $stmt->fetch();
+    $user = array(
+        'username' => $username,
+        'points' => $points,
+        'record' => $record,
+        'win' => $win,
+        'lose' => $lose,
+        'level' => $level,
+        'power' => $power,
+        'quantity' => $quantity
+
+      );
+      $response['error'] = false;
+      $response['message'] = 'Statistiche aggiornate correttamente';
+
+      $response['utente'] = $user;
+      $stmt->close();
+
+  }
+  else {
+    $response['error'] = true;
+    $response['message'] = 'Statistiche non aggiornate';
+    $stmt->close();
+
+
+}
+
+}
+
+
+
+
+echo json_encode($response);
+?>
