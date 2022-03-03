@@ -6,7 +6,7 @@
 //
 
 import Foundation
-
+//NICOLA E TROPP SFACCIMM BELL
 
 
 public class User: Identifiable{
