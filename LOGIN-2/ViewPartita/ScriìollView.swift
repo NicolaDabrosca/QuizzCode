@@ -14,8 +14,9 @@ public struct levels:Hashable{
 }
 struct Scrolla: View {
     
+    @State var user:User
     @State var livello:Int
-    var lv:[levels] = [
+    @State var lv:[levels] = [
         levels(lev:1,ricompensa: "Nu cazz",oggetti : [2,1,0,0]),
         levels(lev:2,ricompensa: "Nu cazz",oggetti : [8,8,3,2]),
         levels(lev:3,ricompensa: "Nu cazz",oggetti : [3,8,0,1]),
@@ -44,7 +45,7 @@ struct Scrolla: View {
                                 .font(.system(size: min(UIScreen.main.bounds.size.width,UIScreen.main.bounds.size.height) * 0.07))
                                 .bold()
                             
-                            if(livello   >= lv.lev){
+                            if(livello >= lv.lev){
                                 
                                 HStack(spacing: -UIScreen.main.bounds.size.width * 0.1){
                                     
@@ -53,7 +54,7 @@ struct Scrolla: View {
                                         Circle()
                                             .fill(Color.blue)
                                             .frame(width: geometry.size.width * 0.1, height: geometry.size.height * 0.1)
-                                        sblocca()
+                                        sblocca(lv: lv, user: user)
                                             .scaleEffect(UIScreen.main.bounds.size.width * 0.001)
                                     } .frame(width: UIScreen.main.bounds.size.width*0.2)
                                     powerUp(lv:lv)
@@ -97,6 +98,7 @@ struct Scrolla: View {
 }
 struct powerUp:View{
     @State var lv:levels
+    
     var body: some View{
         
         
@@ -160,8 +162,6 @@ struct powerUp:View{
                         .font(.system(size: min(UIScreen.main.bounds.size.width,UIScreen.main.bounds.size.height) * 0.05))
                         .bold()
                 }
-                //
-                //
             }
             
             
@@ -190,6 +190,8 @@ struct sblocca:View{
     
     @State private var iconColor = Color(.white)
     
+    @State var lv: levels
+    @State var user:User
     var body: some View {
         
         ZStack {
@@ -236,6 +238,13 @@ struct sblocca:View{
         } // All views
         .foregroundColor(iconColor)
         .onTapGesture {
+            if(user.getUserStruct()[0].reward == lv.lev){
+                user.addPowers(brk: lv.oggetti[0], ifelse: lv.oggetti[1], loop: lv.oggetti[2], rtn: lv.oggetti[3])
+                user.updatePowers()
+                
+                user.setReward(rew: lv.lev)
+                user.updateReward()
+            
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
                 iconColor = Color(.green)
                 scaleHeart = 1
@@ -247,6 +256,7 @@ struct sblocca:View{
             circleHue = 300
             splash = 1.5
             splashTransparency = 0.0
+            }
         }
     }
     
