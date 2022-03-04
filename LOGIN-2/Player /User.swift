@@ -33,6 +33,7 @@ public class User: Identifiable{
         var win: Int
         var lose: Int
         var level: Int
+        var reward: Int
         var power: String
         var quantity: String
     }
@@ -59,6 +60,11 @@ public class User: Identifiable{
         }
         
         
+    }
+    
+    public func setReward(rew: Int){
+        user[0].reward = rew + 1
+        print("REWARD AGGIORNATO: \(user[0].reward)")
     }
     
     public func setUserInfo(points:Int,record:Int,win:Int,lose:Int){
@@ -239,17 +245,15 @@ public class User: Identifiable{
     }
     
     
-    public func updatePowers(){
+    public func updateReward(){
         let request = NSMutableURLRequest(url: NSURL(string:
-                                                        "https://quizcode.altervista.org/API/user/update_user_info.php")! as URL)
+                                                        "https://quizcode.altervista.org/API/user/updateReward.php")! as URL)
         request.httpMethod = "POST"
+
+        let postUsername = "username=" + user[0].username
+        let postReward = "reward=\(user[0].reward)"
         
-        
-        let postBreak = "break= \(quantity[0])"
-        let postIfelse = "if_else= \(quantity[1])"
-        let postLoop = "loop= \(quantity[2])"
-        let postReturn = "return= \(quantity[3])"
-        let postString = postBreak + "&" + postIfelse + "&" + postLoop + "&" + postReturn
+        let postString = postUsername + "&" + postReward
         
         request.httpBody = postString.data(using: String.Encoding.utf8)
         
@@ -267,7 +271,51 @@ public class User: Identifiable{
                 let jsonDecoder = JSONDecoder()
                 do {
                     let parsedJSON = try jsonDecoder.decode(Entry.self, from: data)
-                    
+                    self.user.insert(parsedJSON.utente, at: 0)
+                    let array = self.user[0].quantity.components(separatedBy: ", ")
+                    self.quantity = array.map { Int($0)!} // [1, 2, 10]
+
+                    self.printUser()
+                } catch {
+                    print(error)
+                }
+            }
+        }
+        task.resume()
+    }
+    
+    public func updatePowers(){
+        let request = NSMutableURLRequest(url: NSURL(string:
+                                                        "https://quizcode.altervista.org/API/user/addPowers.php")! as URL)
+        request.httpMethod = "POST"
+        let postUsername = "username=" + user[0].username
+        let postBreak = "break= \(quantity[0])"
+        let postIfelse = "if_else= \(quantity[1])"
+        let postLoop = "loop= \(quantity[2])"
+        let postReturn = "return= \(quantity[3])"
+        let postString = postUsername + "&" + postBreak + "&" + postIfelse + "&" + postLoop + "&" + postReturn
+        
+        request.httpBody = postString.data(using: String.Encoding.utf8)
+        
+        
+        let task = URLSession.shared.dataTask(with: request as URLRequest) {
+            data, response, error in
+            
+            if error != nil {
+                print("error=\(String(describing: error))")
+                return
+            }
+            
+            
+            if let data = data {
+                let jsonDecoder = JSONDecoder()
+                do {
+                    let parsedJSON = try jsonDecoder.decode(Entry.self, from: data)
+                    self.user.insert(parsedJSON.utente, at: 0)
+                    let array = self.user[0].quantity.components(separatedBy: ", ")
+                    self.quantity = array.map { Int($0)!} // [1, 2, 10]
+
+                    self.printUser()
                 } catch {
                     print(error)
                 }
