@@ -153,10 +153,6 @@ struct EndingMatchView: View {
                 }
             })
                     Button(action:{
-//                        gameViewController.cambiadisconnect()
-                        print("PRIMA I AGGIORNARE: *************************")
-                    
-                        user.printUser()
                         aggiornaStats(user: user)
                         user.updateUserInfo()
                                             
