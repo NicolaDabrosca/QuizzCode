@@ -9,6 +9,7 @@ import SwiftUI
 
 struct LevelsView: View {
     //    @Binding var user:User
+    @State var user:User
     @State var livello:Int
     
     
@@ -30,7 +31,7 @@ struct LevelsView: View {
                     }
                     
                     .frame(width:geometry.size.height*0.15)
-                    Scrolla(livello:livello)
+                    Scrolla(user: user, livello:livello)
                         .frame(width:UIScreen.main.bounds.size.width, height:UIScreen.main.bounds.size.height * 0.7)
                     
                 }.edgesIgnoringSafeArea(.all)
