@@ -11,7 +11,7 @@ import GameKit
 
 public struct GameModel: Codable {
     var players: [Player] = []
-    var time: Int = 60
+    var time: Int = 20
     var count: Int = 0
     var connectionstatus:Bool = false
     var fine:Bool = false 

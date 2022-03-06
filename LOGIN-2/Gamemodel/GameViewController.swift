@@ -12,7 +12,7 @@ import GameKitUI
 class GameViewController: UIViewController , ObservableObject{
     
  
-
+    @State var vattene:Bool = false
     var match: GKMatch?
     public var timer: Timer!
     public var disconnected: Bool = false
@@ -26,6 +26,8 @@ class GameViewController: UIViewController , ObservableObject{
     
     public func punisciQuitter(i:Int,j:Int) {
        gameModel.players[i].punti = gameModel.players[j].punti - 1
+        self.gameModel.fine = true
+sendData()
 
     }
     override func viewDidLoad() {
@@ -117,18 +119,20 @@ print("RISPOSTA\(self.gameModel.players[localPlayer.index()].risposto)")
 //    DA CANCELLARE IN FUTURO RICORDA
     @IBAction func buttonAttackPressed1() {
         let localPlayer = getLocalPlayerType()
-        
-        //Change status to attacking
-        gameModel.players[localPlayer.index()].punti -= 5
         self.gameModel.players[localPlayer.index()].risposto = true
+
+        //Change status to attacking
+        if  gameModel.players[localPlayer.index()].punti - 5 >= 0{
+        gameModel.players[localPlayer.index()].punti -= 5
 print("RISPOSTA\(self.gameModel.players[localPlayer.index()].risposto)")
         if localPlayer.index() == 1 && self.gameModel.players[1].ifelse == true{ self.gameModel.players[0].punti += -5 }
         if localPlayer.index() == 0 && self.gameModel.players[0].ifelse == true{self.gameModel.players[1].punti += -5
             
         }
-        if localPlayer.index() == 1 && self.gameModel.players[1].loopo == true{ self.gameModel.players[1].punti -= 45 }
-        if localPlayer.index() == 0 && self.gameModel.players[0].loopo == true{self.gameModel.players[0].punti -= 45
+        if localPlayer.index() == 1 && self.gameModel.players[1].loopo == true{ self.gameModel.players[1].punti -= 25 }
+        if localPlayer.index() == 0 && self.gameModel.players[0].loopo == true{self.gameModel.players[0].punti -= 25
             
+        }
         }
         sendData()
         
@@ -225,7 +229,7 @@ print("Break\(self.gameModel.players[localPlayer.index()].isbreak)")
             
             DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                 if(self.gameModel.players[0].risposto == true && self.gameModel.players[1].risposto == true || self.gameModel.time == 0){
-                    self.gameModel.time = 60
+                    self.gameModel.time = 20
                     self.gameModel.count += 1
                    
                         self.gameModel.players[1].isbreak = false
@@ -238,7 +242,7 @@ print("Break\(self.gameModel.players[localPlayer.index()].isbreak)")
                 self.gameModel.players[0].risposto = false
                     self.gameModel.players[1].risposto = false}
                 DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
-                    if (self.gameModel.count == 9) {
+                    if (self.gameModel.count == 9 ||  self.gameModel.fine == true)  {
 //                    GKMatchManager.shared.cancel()
 //                    print("qua finisce\(disconnected)")
                     self.disconnected = true

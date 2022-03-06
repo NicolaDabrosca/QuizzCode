@@ -32,6 +32,10 @@
 		41BD9FBF27B3C723003E2AE7 /* GameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41BD9FBE27B3C723003E2AE7 /* GameViewController.swift */; };
 		41BD9FC127B3C987003E2AE7 /* GameCenterHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41BD9FC027B3C986003E2AE7 /* GameCenterHelper.swift */; };
 		41BD9FC327B3E3C1003E2AE7 /* Player.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41BD9FC227B3E3C1003E2AE7 /* Player.swift */; };
+		41C6D41E27D1090000855C95 /* correct.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 41C6D41D27D1090000855C95 /* correct.mp3 */; };
+		41C6D42027D10BAF00855C95 /* wrong.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 41C6D41F27D10BAF00855C95 /* wrong.mp3 */; };
+		41C6D42227D1191300855C95 /* wrong.wav in Resources */ = {isa = PBXBuildFile; fileRef = 41C6D42127D1191300855C95 /* wrong.wav */; };
+		41C6D42427D1191800855C95 /* correct.wav in Resources */ = {isa = PBXBuildFile; fileRef = 41C6D42327D1191800855C95 /* correct.wav */; };
 		41D2C99F27BE42560015C59D /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41D2C99E27BE42560015C59D /* MainView.swift */; };
 		41D2C9A127BE47140015C59D /* LevelsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41D2C9A027BE47140015C59D /* LevelsView.swift */; };
 		41D2C9A327BE5A040015C59D /* Profilo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41D2C9A227BE5A040015C59D /* Profilo.swift */; };
@@ -66,6 +70,10 @@
 		41BD9FBE27B3C723003E2AE7 /* GameViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameViewController.swift; sourceTree = "<group>"; };
 		41BD9FC027B3C986003E2AE7 /* GameCenterHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameCenterHelper.swift; sourceTree = "<group>"; };
 		41BD9FC227B3E3C1003E2AE7 /* Player.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Player.swift; sourceTree = "<group>"; };
+		41C6D41D27D1090000855C95 /* correct.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = correct.mp3; sourceTree = "<group>"; };
+		41C6D41F27D10BAF00855C95 /* wrong.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = wrong.mp3; sourceTree = "<group>"; };
+		41C6D42127D1191300855C95 /* wrong.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = wrong.wav; sourceTree = "<group>"; };
+		41C6D42327D1191800855C95 /* correct.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = correct.wav; sourceTree = "<group>"; };
 		41D2C99E27BE42560015C59D /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
 		41D2C9A027BE47140015C59D /* LevelsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LevelsView.swift; sourceTree = "<group>"; };
 		41D2C9A227BE5A040015C59D /* Profilo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Profilo.swift; sourceTree = "<group>"; };
@@ -170,8 +178,12 @@
 		41F19C0E27BD52DF00E52207 /* ViewPartita */ = {
 			isa = PBXGroup;
 			children = (
+				41C6D41D27D1090000855C95 /* correct.mp3 */,
+				41C6D41F27D10BAF00855C95 /* wrong.mp3 */,
+				41C6D42327D1191800855C95 /* correct.wav */,
 				41D2C9A027BE47140015C59D /* LevelsView.swift */,
 				4136CD7D27BA4AD500CDDF8B /* MatchMakerView.swift */,
+				41C6D42127D1191300855C95 /* wrong.wav */,
 				411647D527BF959000ABE230 /* EndingView.swift */,
 				41D2C9A227BE5A040015C59D /* Profilo.swift */,
 				41D2C99E27BE42560015C59D /* MainView.swift */,
@@ -250,9 +262,13 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				41C6D42027D10BAF00855C95 /* wrong.mp3 in Resources */,
 				41BD9FB027B3B851003E2AE7 /* Preview Assets.xcassets in Resources */,
 				417EC26027C8F7B900FACC78 /* Localizable.strings in Resources */,
 				41BD9FAD27B3B851003E2AE7 /* Assets.xcassets in Resources */,
+				41C6D42427D1191800855C95 /* correct.wav in Resources */,
+				41C6D42227D1191300855C95 /* wrong.wav in Resources */,
+				41C6D41E27D1090000855C95 /* correct.mp3 in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -16,9 +16,23 @@ import Foundation
 import SwiftUI
 import GameKit
 import GameKitUI
-
+import AVFoundation
 
 struct MatchView: View {
+    @State var audioPlayer: AVAudioPlayer!
+
+    func playSounds(_ soundFileName : String) {
+           guard let soundURL = Bundle.main.url(forResource: soundFileName, withExtension: nil) else {
+               fatalError("Unable to find \(soundFileName) in bundle")
+           }
+
+           do {
+               audioPlayer = try AVAudioPlayer(contentsOf: soundURL)
+           } catch {
+               print(error.localizedDescription)
+           }
+           audioPlayer.play()
+       }
     @ObservedObject var gameViewController = GameViewController()
     var match: GKMatch
     @State var loading: Bool = true
@@ -43,7 +57,8 @@ struct MatchView: View {
         var indovinato:Bool
         @State var playing1:Int
     }
-    
+    @State  var showingAlert = false
+
     @State var disattiva:Bool = false
     @State var progressValue: Float = 0.0
     @State var answers: [Answers] = []
@@ -88,18 +103,7 @@ struct MatchView: View {
                         gameViewController.viewDidLoad()
                         DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(1000)){
                             loading = false
-//                            foto = GKLocalPlayer.local.loadPhotoForSize(.normal, withCompletionHandler: {
-//                                       (image, error) in
-//
-//                                       var playerInformationTuple:(playerID:String,alias:String,profilPhoto:UIImage?)
-//                                       playerInformationTuple.profilPhoto = nil
-//
-//                                       playerInformationTuple.playerID = EGC.localPayer.playerID!
-//                                       playerInformationTuple.alias = EGC.localPayer.alias!
-//                                       if error == nil { playerInformationTuple.profilPhoto = image }
-//                                       completionTuple(playerInformationTuple: playerInformationTuple)
-//
-//                                   })
+
                             Task{     await foto = try  GKLocalPlayer.local.loadPhoto(for: .small)
                                 await foto1 = try  match.players.first?.loadPhoto(for: .small) as! UIImage
                             }
@@ -119,40 +123,51 @@ struct MatchView: View {
                     //                    UNA VOLTA CHE HO CARICATO APRO TUTTO
                     if (loading == false){
                         
-                        
+                        VStack{
                         VStack {
                             //                            ROUND CON COUNT
-                            HStack(spacing:120){     Text("\(gameViewController.gameModel.count+1)/10")
-                                    .bold()
-                                    .foregroundColor(.white)
-                                    .font(.largeTitle)
-                                    .frame(alignment: .top)
-                         
+                               
+                                
                                 Button {
-                                    ohmamma.toggle()
-                                    var i = chisei()
-                                    var j = 1
-                                    if(i == 1){
-                                        j = 0
-                                    }
-                                    gameViewController.punisciQuitter(i: i, j: j)
+                                    showingAlert = true
+                         
                                 } label: {
                                     Image(systemName: "flag.fill")
                                         .foregroundColor(.white)
-                                }
-
-                            }.padding(.leading,150)
+                                        .padding(.leading)
+                                }.padding(.leading, UIScreen.main.bounds.size.width * 0.85)
+                                
+                                .alert("Sei sicuro di voler abbandonare?", isPresented: $showingAlert) {
+                                            Button("No", role: .cancel) { }
+                                    Button("Quit"){           ohmamma.toggle()
+                                        var i = chisei()
+                                        var j = 1
+                                        if(i == 1){
+                                            j = 0
+                                        }
+                                        gameViewController.punisciQuitter(i: i, j: j)}
+                                        }
                             
                             //                            UTENTI E PUNTI
                             HStack{
                                 VStack{
-                                    Image(uiImage: foto)
-                                        .scaleEffect(0.4)
-                                        .frame(width: 100, height: 100)
-
-//
+                                    if gameViewController.gameModel.players[0].displayName == GKLocalPlayer.local.displayName{
+                                        Image(uiImage: foto)
+                                            .scaleEffect(0.3)
+                                          
+                                            .frame(width: UIScreen.main.bounds.size.width*0.22, height: UIScreen.main.bounds.size.height*0.1)
+                                            .clipShape(Circle())
+                                    }else{Image(uiImage: foto1)
+                                            .scaleEffect(0.3)
+                                            .frame(width: UIScreen.main.bounds.size.width*0.22, height: UIScreen.main.bounds.size.height*0.1)
+                                            .clipShape(Circle())
+                                    }
+                                      
+                                     
                                     
-                                        Text(gameViewController.gameModel.players[0].displayName )
+                                    //
+                                    
+                                    Text(gameViewController.gameModel.players[0].displayName )
                                         .bold()
                                         .foregroundColor(.white)
                                     Text("\(gameViewController.gameModel.players[0].punti )")
@@ -161,38 +176,51 @@ struct MatchView: View {
                                         .animation(.easeOut(duration: 1),value : attaccato )
                                         .scaleEffect(attaccato && gameViewController.gameModel.players[0].displayName == gameViewController.gameModel.players[chisei()].displayName ? 1.3 : 1)
                                         .animation(.easeOut(duration: 1),value : attaccato )
-
-                                        .font(.largeTitle)
+                                    
+                                        .font(.title)
                                 }
                                 
                                 
                                 
-                                VStack{ ProgressCircle(value: Double(gameViewController.gameModel.time),
+                                VStack(spacing: -UIScreen.main.bounds.size.height * 0.015){ ProgressCircle(value: Double(gameViewController.gameModel.time),
                                                        maxValue: Double(progress),
                                                        style: .line,
                                                        foregroundColor: Color.white,
-                                                       lineWidth: 20)
+                                                       lineWidth: 12)
                                     
-                                        .scaleEffect(0.6)
+                                        .scaleEffect(0.8)
                                     
-                                    .frame(width:150,height: 150)}
+                                    .frame(width: UIScreen.main.bounds.size.width*0.20, height: UIScreen.main.bounds.size.height*0.20)
+                                    Text("\(gameViewController.gameModel.count+1)/10")
+                                            .bold()
+                                            .foregroundColor(.white)
+                                            .font(.largeTitle)
+                                            .frame(alignment: .center)
+                                }
                                 VStack{
-                                    Image(uiImage: foto1)
-                                        .scaleEffect(0.4)
-                                        .frame(width: 100, height: 100)
+                                    if gameViewController.gameModel.players[0].displayName == GKLocalPlayer.local.displayName{
+                                        Image(uiImage: foto1)
+                                            .scaleEffect(0.3)
+                                    
+                                            .frame(width: UIScreen.main.bounds.size.width*0.22, height: UIScreen.main.bounds.size.height*0.1)
+                                            .clipShape(Circle())
+                                    }else{Image(uiImage: foto)
+                                            .scaleEffect(0.3)
+                                            .frame(width: UIScreen.main.bounds.size.width*0.22, height: UIScreen.main.bounds.size.height*0.1)
+                                            .clipShape(Circle())
+                                    }
                                     Text(gameViewController.gameModel.players[1].displayName)
                                         .bold()
                                         .foregroundColor(.white)
                                     Text("\(gameViewController.gameModel.players[1].punti)")
                                         .font(.largeTitle)
-                                    
                                         .bold()
-
-                                       
+                                    
+                                    
                                         .foregroundColor(attaccato && gameViewController.gameModel.players[1].displayName  == gameViewController.gameModel.players[chisei()].displayName ? aggiorna : .white)
                                     
-                                    .scaleEffect(attaccato && gameViewController.gameModel.players[1].displayName == gameViewController.gameModel.players[chisei()].displayName ? 1.3 : 1)
-                                    .animation(.easeOut(duration: 1),value : attaccato )
+                                        .scaleEffect(attaccato && gameViewController.gameModel.players[1].displayName == gameViewController.gameModel.players[chisei()].displayName ? 1.3 : 1)
+                                        .animation(.easeOut(duration: 1),value : attaccato )
                                     
                                 }
                             }
@@ -212,17 +240,20 @@ struct MatchView: View {
 //
 //
 //
+                            
                             ZStack{
                                 RoundedRectangle(cornerRadius: 20)
-                                    .padding()
                                     .foregroundColor(.white)
-                                    .frame(width: 420, height: 120)
+                                    .frame(width: UIScreen.main.bounds.size.width*0.9, height: UIScreen.main.bounds.size.height*0.09)
                                     .shadow(radius: 10)
                                 
                                 Text(domande.questions[gameViewController.gameModel.count].text)
                                     .foregroundColor(.accentColor)
-                                    .font(.title2)
                                     .bold()
+                                    .font(.title2)
+                                    .minimumScaleFactor(0.0003)
+                                       .lineLimit(2)
+                                       .frame(width: UIScreen.main.bounds.size.width*0.88, height: UIScreen.main.bounds.size.height*0.09)
                                     .onChange(of: domande.questions[gameViewController.gameModel.count].text) { newValue in
                                         
                                         DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(1000)){
@@ -246,16 +277,16 @@ struct MatchView: View {
                                 
                                 
                                 
-                            }
+                            }}.padding(.bottom,-UIScreen.main.bounds.size.height*0.2)
                             
-                            Spacer()
+           
                             
-                            
-                            ZStack{
-                                Image("rectangleanswers")
-                                    .padding(100)
-                                
+//                            DOMANDE""
+                       
+                            VStack(spacing:-UIScreen.main.bounds.size.height*0.045){
                                 VStack{
+                                    Spacer()
+                                        .frame(height: UIScreen.main.bounds.height*0.02)
                                     //                                RISPOSTE
                                     
                                     ForEach(answers) { answers in
@@ -272,6 +303,10 @@ struct MatchView: View {
 //                                                    returno = false
 //
 //                                                }
+//                                                self.playSound(sound: "correct", type: "mp3")
+                                       
+                                                playSounds("correct.wav")
+
                                                 disattiva = true
                                                 attaccato = true
                                                 DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(1000)){
@@ -286,15 +321,24 @@ struct MatchView: View {
                                                         .padding(4)
                                                         .foregroundColor( naccCristo[answers.playing1] ? Color.green : Color.white)
                                                         .animation(.easeInOut(duration: 0.5), value:  naccCristo[answers.playing1])
-                                                        .frame(width: 380, height: 70)
+                                                        .frame(width: UIScreen.main.bounds.size.width*0.89, height: UIScreen.main.bounds.size.height*0.08)
                                                         .shadow(radius: 10)
                                                     HStack{
                                                         //                Image(systemName: playing ? "pause" : "play")
                                                         Text(answers.answer)
+
                                                             .bold()
+                                                            .minimumScaleFactor(0.0003)
+                                                               .lineLimit(2)
+                                                               .frame(width: UIScreen.main.bounds.size.width*0.88, height: UIScreen.main.bounds.size.height*0.08)
                                                     }
-                                                    .foregroundColor( naccCristo[answers.playing1] ? Color.white : Color.color2 )
-                                                    
+                                                    .foregroundColor( naccCristo[answers.playing1] ? Color.white : Color.accentColor )
+                                                    if disattiva == true {
+                                                        RoundedRectangle(cornerRadius: 20)
+                                                            .stroke(Color.green, lineWidth: 4)
+                                                            .frame(width: UIScreen.main.bounds.size.width*0.86, height: UIScreen.main.bounds.size.height*0.075)
+                                                            
+                                                    }
                                                     
                                                 }
                                                 //                                                DemoView(correct: $naccCristo[answers.playing1], testo: answers.answer)
@@ -306,7 +350,8 @@ struct MatchView: View {
                                             Button(action:
                                                     {
                                                 
-                                                
+                                                playSounds("wrong.wav")
+
                                                 attaccato = true
                                                 aggiorna = .red
                                                 DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(1000)){
@@ -330,20 +375,24 @@ struct MatchView: View {
                                                 
                                             },label:{
                                                 //
-                                                ZStack{
+                                             ZStack{
                                                     
                                                     //
                                                     RoundedRectangle(cornerRadius: 20)
                                                         .padding(4)
                                                         .foregroundColor(naccCristo[answers.playing1] ? Color.red : Color.white)
                                                         .animation(.easeInOut(duration: 0.5), value: naccCristo[answers.playing1])
-                                                        .frame(width: 380, height: 70)
+                                                        .frame(width: UIScreen.main.bounds.size.width*0.9, height: UIScreen.main.bounds.size.height*0.08)
                                                         .shadow(radius: 10)
                                                     HStack{
                                                         Text(answers.answer)
+
                                                             .bold()
+                                                            .minimumScaleFactor(0.0003)
+                                                               .lineLimit(2)
+                                                               .frame(width: UIScreen.main.bounds.size.width*0.88, height: UIScreen.main.bounds.size.height*0.08)
                                                     }
-                                                    .foregroundColor(naccCristo[answers.playing1] ? Color.white : Color.color2 )
+                                                    .foregroundColor(naccCristo[answers.playing1] == true ? Color.white : Color.accentColor )
                                                     //                                                    Text(answers.answer)
                                                 }.disabled(disattiva)
                                             }).disabled(disattiva)
@@ -354,14 +403,14 @@ struct MatchView: View {
                                     }
                                     
                                 }
-                            }
+                            .padding(.top,UIScreen.main.bounds.size.height * 0.2)
 //
 //
 //                            Powerup
 //
 //
 //                            
-                                
+                            VStack{
                             HStack{
                                 Button(action: {returno = false
                                     disattivapot = true
@@ -370,43 +419,102 @@ struct MatchView: View {
                                         user.quantity[3] -= 1
                                     }
                                 }, label: {
-                                    ZStack{  if( gameViewController.gameModel.players[1].isbreak == false || gameViewController.gameModel.players[0].isbreak == false )
+                                    ZStack{
+                                        //                                        normale
+                                        if( gameViewController.gameModel.players[1].isbreak == false || gameViewController.gameModel.players[0].isbreak == false )
                                         {
-                                        RoundedRectangle(cornerRadius: 20)
-
-                                        
-                                            .fill( Color.blue )
-                                        RoundedRectangle(cornerRadius: 20)
-
-                                            .stroke(Color.white, lineWidth: 4)
-
-                                            .frame(width: 80, height: 80)
-                                        Text("Return")
-                                            .foregroundColor( Color.white)
-                                    }
-                                        if(GKLocalPlayer.local.displayName == gameViewController.gameModel.players[1].displayName &&  gameViewController.gameModel.players[1].isbreak == true || GKLocalPlayer.local.displayName == gameViewController.gameModel.players[0].displayName &&  gameViewController.gameModel.players[0].isbreak == true )
+                                            ZStack{
+                                                Circle()
+                                                    .foregroundColor(.white)
+                                                    .frame(width: UIScreen.main.bounds.size.width*0.15, height: UIScreen.main.bounds.size.height*0.15)
+                                                    .padding()
+                                                
+                                                Image("return")
+                                                VStack{
+                                                    Spacer()
+                                                        .frame(height: UIScreen.main.bounds.height*0.044)
+                                                    HStack{
+                                                        Spacer()
+                                                            .frame(width: UIScreen.main.bounds.width*0.06)
+                                                        ZStack{
+                                                            Circle()
+                                                                .foregroundColor(.color2)
+                                                                .frame(width: UIScreen.main.bounds.size.width*0.055, height: UIScreen.main.bounds.size.height*0.055)
+                                                            
+                                                            Text("\(user.quantity[3])")
+                                                                .bold()
+                                                                .font(.system(size: min(UIScreen.main.bounds.size.width,UIScreen.main.bounds.size.height) * 0.035))
+                                                                .foregroundColor(.white)
+                                                                .shadow(color:.accentColor,radius: 4)
+                                                        }.padding(.leading)
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        //                                        se breakkato
+                                        if(GKLocalPlayer.local.displayName == gameViewController.gameModel.players[1].displayName &&  gameViewController.gameModel.players[1].isbreak == true || GKLocalPlayer.local.displayName == gameViewController.gameModel.players[0].displayName &&  gameViewController.gameModel.players[0].isbreak == true || user.quantity[3] == 0)
                                         {
-                                            RoundedRectangle(cornerRadius: 20)
-
-                                                .fill(Color.black)
-                                                .opacity( 0.6 )
-
-                                                .frame(width: 80, height: 80)
-                                            Text("Return")
-                                                .foregroundColor(.white)
+                                            ZStack{
+                                                Circle()
+                                                    .foregroundColor(.black.opacity(0.3))
+                                                    .frame(width: UIScreen.main.bounds.size.width*0.15, height: UIScreen.main.bounds.size.height*0.15)
+                                                    .padding()
+                                                
+                                                Image("return")
+                                                    .opacity(0.2)
+                                                VStack{
+                                                    Spacer()
+                                                        .frame(height: UIScreen.main.bounds.height*0.044)
+                                                    HStack{
+                                                        Spacer()
+                                                            .frame(width: UIScreen.main.bounds.width*0.06)
+                                                        ZStack{
+                                                            Circle()
+                                                                .foregroundColor(.secondary)
+                                                                .frame(width: UIScreen.main.bounds.size.width*0.055, height: UIScreen.main.bounds.size.height*0.055)
+                                                            
+                                                            Text("\(user.quantity[3])")
+                                                                .bold()
+                                                                .font(.system(size: min(UIScreen.main.bounds.size.width,UIScreen.main.bounds.size.height) * 0.035))
+                                                                .foregroundColor(.white)
+                                                                .shadow(color:.accentColor,radius: 4)
+                                                        }.padding(.leading)
+                                                    }
+                                                }
+                                            }
                                             
                                             //                                            Text("\(user.quantity[2])")
                                         }
-                                        
+                                        //                                        quando premi
                                         if power1 == true {
-                                            RoundedRectangle(cornerRadius: 20)
-
-                                                .fill(Color.white)
-                                                .scaleEffect(1.1)
-
-                                                .frame(width: 80, height: 80)
-                                            Text("Return")
-                                                .foregroundColor(.color2)
+                                            ZStack{
+                                                Circle()
+                                                    .foregroundColor(.white)
+                                                    .shadow(color: .color2, radius: 14)
+                                                    .frame(width: UIScreen.main.bounds.size.width*0.15, height: UIScreen.main.bounds.size.height*0.15)
+                                                    .padding()
+                                                
+                                                Image("return")
+                                                VStack{
+                                                    Spacer()
+                                                        .frame(height: UIScreen.main.bounds.height*0.044)
+                                                    HStack{
+                                                        Spacer()
+                                                            .frame(width: UIScreen.main.bounds.width*0.06)
+                                                        ZStack{
+                                                            Circle()
+                                                                .foregroundColor(.color2)
+                                                                .frame(width: UIScreen.main.bounds.size.width*0.055, height: UIScreen.main.bounds.size.height*0.055)
+                                                            
+                                                            Text("\(user.quantity[3])")
+                                                                .bold()
+                                                                .font(.system(size: min(UIScreen.main.bounds.size.width,UIScreen.main.bounds.size.height) * 0.035))
+                                                                .foregroundColor(.white)
+                                                                .shadow(color:.accentColor,radius: 4)
+                                                        }.padding(.leading)
+                                                    }
+                                                }
+                                            }.scaleEffect(1.3)
                                         }
                                     }
                                 }).disabled(disattivapot || gameViewController.gameModel.players[1].isbreak || gameViewController.gameModel.players[0].isbreak )
@@ -419,41 +527,99 @@ struct MatchView: View {
                                 }, label: {
                                     ZStack{  if( gameViewController.gameModel.players[1].isbreak == false || gameViewController.gameModel.players[0].isbreak == false ){
                                         
-                                        RoundedRectangle(cornerRadius: 20)
-                                            .fill( Color.blue )
-                                        
-                                    RoundedRectangle(cornerRadius: 20)
-
-                                        .stroke(Color.white, lineWidth: 4)
-                                      
-                                            .frame(width: 80, height: 80)
-                                        Text("If...else...")
-                                            .foregroundColor(Color.white)
-
-                                    }
-                                        if( GKLocalPlayer.local.displayName == gameViewController.gameModel.players[1].displayName &&  gameViewController.gameModel.players[1].isbreak == true || GKLocalPlayer.local.displayName == gameViewController.gameModel.players[0].displayName &&  gameViewController.gameModel.players[0].isbreak == true )
-                                        {
-                                            RoundedRectangle(cornerRadius: 20)
-                                            
-                                                .fill(Color.black)
-                                                .opacity(0.6)
-
-                                                .frame(width: 80, height: 80)
-                                            Text("If...else...")
+                                        ZStack{
+                                            Circle()
                                                 .foregroundColor(.white)
+                                                .frame(width: UIScreen.main.bounds.size.width*0.15, height: UIScreen.main.bounds.size.height*0.15)
+                                                .padding()
+                                            
+                                            Image("ifelse")
+                                            VStack{
+                                                Spacer()
+                                                    .frame(height: UIScreen.main.bounds.height*0.044)
+                                                HStack{
+                                                    Spacer()
+                                                        .frame(width: UIScreen.main.bounds.width*0.06)
+                                                    ZStack{
+                                                        Circle()
+                                                            .foregroundColor(.color2)
+                                                            .frame(width: UIScreen.main.bounds.size.width*0.055, height: UIScreen.main.bounds.size.height*0.055)
+                                                        
+                                                        Text("\(user.quantity[1])")
+                                                            .bold()
+                                                            .font(.system(size: min(UIScreen.main.bounds.size.width,UIScreen.main.bounds.size.height) * 0.035))
+                                                            .foregroundColor(.white)
+                                                            .shadow(color:.accentColor,radius: 4)
+                                                    }.padding(.leading)
+                                                }
+                                            }
+                                        }
+                                        
+                                    }
+                                        if( GKLocalPlayer.local.displayName == gameViewController.gameModel.players[1].displayName &&  gameViewController.gameModel.players[1].isbreak == true || GKLocalPlayer.local.displayName == gameViewController.gameModel.players[0].displayName &&  gameViewController.gameModel.players[0].isbreak == true || user.quantity[1] == 0)
+                                        {
+                                            ZStack{
+                                                Circle()
+                                                    .foregroundColor(.black.opacity(0.3))
+                                                    .frame(width: UIScreen.main.bounds.size.width*0.15, height: UIScreen.main.bounds.size.height*0.15)
+                                                    .padding()
+                                                
+                                                Image("ifelse")
+                                                    .opacity(0.2)
+                                                VStack{
+                                                    Spacer()
+                                                        .frame(height: UIScreen.main.bounds.height*0.044)
+                                                    HStack{
+                                                        Spacer()
+                                                            .frame(width: UIScreen.main.bounds.width*0.06)
+                                                            .frame(width: 18)
+                                                        ZStack{
+                                                            Circle()
+                                                                .foregroundColor(.color2)
+                                                                .frame(width: UIScreen.main.bounds.size.width*0.055, height: UIScreen.main.bounds.size.height*0.055)
+                                                            
+                                                            Text("\(user.quantity[1])")
+                                                                .bold()
+                                                                .font(.system(size: min(UIScreen.main.bounds.size.width,UIScreen.main.bounds.size.height) * 0.035))
+                                                                .foregroundColor(.white)
+                                                                .shadow(color:.accentColor,radius: 4)
+                                                        }.padding(.leading)
+                                                    }
+                                                }
+                                            }
                                             
                                             //                                            Text("\(user.quantity[2])")
                                         }
                                         
                                         if power2 == true {
-                                            RoundedRectangle(cornerRadius: 20)
-                                            
-                                                .fill(Color.white)
-                                                .scaleEffect(1.1)
-
-                                                .frame(width: 80, height: 80)
-                                            Text("If...else...")
-                                                .foregroundColor(.color2)
+                                            ZStack{
+                                                Circle()
+                                                    .foregroundColor(.white)
+                                                    .shadow(color: .color2, radius: 14)
+                                                    .frame(width: UIScreen.main.bounds.size.width*0.15, height: UIScreen.main.bounds.size.height*0.15)
+                                                    .padding()
+                                                
+                                                Image("ifelse")
+                                                VStack{
+                                                    Spacer()
+                                                        .frame(height: UIScreen.main.bounds.height*0.044)
+                                                    HStack{
+                                                        Spacer()
+                                                            .frame(width: UIScreen.main.bounds.width*0.06)
+                                                        ZStack{
+                                                            Circle()
+                                                                .foregroundColor(.color2)
+                                                                .frame(width: UIScreen.main.bounds.size.width*0.055, height: UIScreen.main.bounds.size.height*0.055)
+                                                            
+                                                            Text("\(user.quantity[1])")
+                                                                .bold()
+                                                                .font(.system(size: min(UIScreen.main.bounds.size.width,UIScreen.main.bounds.size.height) * 0.035))
+                                                                .foregroundColor(.white)
+                                                                .shadow(color:.accentColor,radius: 4)
+                                                        }.padding(.leading)
+                                                    }
+                                                }
+                                            }.scaleEffect(1.3)
                                             
                                         }
                                         
@@ -469,43 +635,101 @@ struct MatchView: View {
                                 }, label: {
                                     ZStack{
                                         
-                                        if( gameViewController.gameModel.players[1].isbreak == false || gameViewController.gameModel.players[0].isbreak == false ){
-                                            RoundedRectangle(cornerRadius: 20)
+                                        if( gameViewController.gameModel.players[1].isbreak == false || gameViewController.gameModel.players[0].isbreak == false )
+                                        {
+                                            ZStack{
+                                                Circle()
+                                                    .foregroundColor(.white)
+                                                    .frame(width: UIScreen.main.bounds.size.width*0.15, height: UIScreen.main.bounds.size.height*0.15)
+                                                    .padding()
+                                                
+                                                Image("break")
+                                                VStack{
+                                                    Spacer()
+                                                        .frame(height: UIScreen.main.bounds.height*0.044)
+                                                    HStack{
+                                                        Spacer()
+                                                            .frame(width: UIScreen.main.bounds.width*0.06)
+                                                        ZStack{
+                                                            Circle()
+                                                                .foregroundColor(.color2)
+                                                                .frame(width: UIScreen.main.bounds.size.width*0.055, height: UIScreen.main.bounds.size.height*0.055)
+                                                            
+                                                            Text("\(user.quantity[0])")
+                                                                .bold()
+                                                                .font(.system(size: min(UIScreen.main.bounds.size.width,UIScreen.main.bounds.size.height) * 0.035))
+                                                                .foregroundColor(.white)
+                                                                .shadow(color:.accentColor,radius: 4)
+                                                        }.padding(.leading)
+                                                    }
+                                                }
+                                            }
                                             
-                                                .fill(Color.blue)
-                                            
-                                        RoundedRectangle(cornerRadius: 20)
-
-                                            .stroke(Color.white, lineWidth: 4)
-                                                .frame(width: 80, height: 80)
-                                            Text("Break")
-                                                .foregroundColor( Color.white )
-
                                             //                                            Text("\(user.quantity[0])")
                                         }
-                                        if(GKLocalPlayer.local.displayName == gameViewController.gameModel.players[1].displayName &&   gameViewController.gameModel.players[1].isbreak == true || GKLocalPlayer.local.displayName == gameViewController.gameModel.players[0].displayName &&  gameViewController.gameModel.players[0].isbreak == true )
+                                        if(GKLocalPlayer.local.displayName == gameViewController.gameModel.players[1].displayName &&   gameViewController.gameModel.players[1].isbreak == true || GKLocalPlayer.local.displayName == gameViewController.gameModel.players[0].displayName &&  gameViewController.gameModel.players[0].isbreak == true || user.quantity[0] == 0 )
                                         {
-                                            RoundedRectangle(cornerRadius: 20)
-                                            
-                                                .fill(Color.black)
-                                                .opacity(0.6)
-
-                                                .frame(width: 80, height: 80)
-                                            Text("Break")
-                                                .foregroundColor(.white)
+                                            ZStack{
+                                                Circle()
+                                                    .foregroundColor(.black.opacity(0.3))
+                                                    .frame(width: UIScreen.main.bounds.size.width*0.15, height: UIScreen.main.bounds.size.height*0.15)
+                                                    .padding()
+                                                
+                                                Image("break")
+                                                    .opacity(0.2)
+                                                VStack{
+                                                    Spacer()
+                                                        .frame(height: UIScreen.main.bounds.height*0.044)
+                                                    HStack{
+                                                        Spacer()
+                                                            .frame(width: UIScreen.main.bounds.width*0.06)
+                                                        ZStack{
+                                                            Circle()
+                                                                .foregroundColor(.color2)
+                                                                .frame(width: UIScreen.main.bounds.size.width*0.055, height: UIScreen.main.bounds.size.height*0.055)
+                                                            
+                                                            Text("\(user.quantity[0])")
+                                                                .bold()
+                                                                .font(.system(size: min(UIScreen.main.bounds.size.width,UIScreen.main.bounds.size.height) * 0.035))
+                                                                .foregroundColor(.white)
+                                                                .shadow(color:.accentColor,radius: 4)
+                                                        }.padding(.leading)
+                                                    }
+                                                }
+                                            }
                                             
                                             //                                            Text("\(user.quantity[0])")
                                             
                                         }
                                         if power3 == true {
-                                            RoundedRectangle(cornerRadius: 20)
-                                            
-                                                .fill(Color.white)
-                                                .frame(width: 80, height: 80)
-                                                .scaleEffect(1.1)
-
-                                            Text("Break")
-                                                .foregroundColor(.color2)
+                                            ZStack{
+                                                Circle()
+                                                    .foregroundColor(.white)
+                                                    .shadow(color: .color2, radius: 14)
+                                                    .frame(width: UIScreen.main.bounds.size.width*0.15, height: UIScreen.main.bounds.size.height*0.15)
+                                                    .padding()
+                                                
+                                                Image("break")
+                                                VStack{
+                                                    Spacer()
+                                                        .frame(height: UIScreen.main.bounds.height*0.044)
+                                                    HStack{
+                                                        Spacer()
+                                                            .frame(width: UIScreen.main.bounds.width*0.06)
+                                                        ZStack{
+                                                            Circle()
+                                                                .foregroundColor(.color2)
+                                                                .frame(width: UIScreen.main.bounds.size.width*0.055, height: UIScreen.main.bounds.size.height*0.055)
+                                                            
+                                                            Text("\(user.quantity[0])")
+                                                                .bold()
+                                                                .font(.system(size: min(UIScreen.main.bounds.size.width,UIScreen.main.bounds.size.height) * 0.035))
+                                                                .foregroundColor(.white)
+                                                                .shadow(color:.accentColor,radius: 4)
+                                                        }.padding(.leading)
+                                                    }
+                                                }
+                                            }.scaleEffect(1.3)
                                             
                                         }
                                     }
@@ -519,58 +743,126 @@ struct MatchView: View {
                                 }, label: {
                                     ZStack{
                                         
-                                        if( gameViewController.gameModel.players[1].isbreak == false || gameViewController.gameModel.players[0].isbreak == false ){  RoundedRectangle(cornerRadius: 20)
-                                            
-                                                .fill( Color.blue )
-                                            
-                                        RoundedRectangle(cornerRadius: 20)
-
-                                            .stroke(Color.white, lineWidth: 4)
-                                                .frame(width: 80, height: 80)
-                                            Text("Loop")
-                                                .foregroundColor(Color.white)
-
-                                        }
-                                        if(GKLocalPlayer.local.displayName == gameViewController.gameModel.players[1].displayName &&  gameViewController.gameModel.players[1].isbreak == true || GKLocalPlayer.local.displayName == gameViewController.gameModel.players[0].displayName &&  gameViewController.gameModel.players[0].isbreak == true )
+                                        if( gameViewController.gameModel.players[1].isbreak == false || gameViewController.gameModel.players[0].isbreak == false )
                                         {
-                                            RoundedRectangle(cornerRadius: 20)
+                                            ZStack{
+                                                Circle()
+                                                    .foregroundColor(.white)
+                                                    .frame(width: UIScreen.main.bounds.size.width*0.15, height: UIScreen.main.bounds.size.height*0.15)
+                                                    .padding()
+                                                
+                                                Image("loop")
+                                                VStack{
+                                                    Spacer()
+                                                        .frame(height: UIScreen.main.bounds.height*0.044)
+                                                    HStack{
+                                                        Spacer()
+                                                            .frame(width: UIScreen.main.bounds.width*0.06)
+                                                        ZStack{
+                                                            Circle()
+                                                                .foregroundColor(.color2)
+                                                                .frame(width: UIScreen.main.bounds.size.width*0.055, height: UIScreen.main.bounds.size.height*0.055)
+                                                            
+                                                            Text("\(user.quantity[2])")
+                                                                .bold()
+                                                                .font(.system(size: min(UIScreen.main.bounds.size.width,UIScreen.main.bounds.size.height) * 0.035))
+                                                                .foregroundColor(.white)
+                                                                .shadow(color:.accentColor,radius: 4)
+                                                        }.padding(.leading)
+                                                    }
+                                                }
+                                            }
                                             
-                                                .fill(Color.black)
-                                                .opacity(0.6)
-
-                                                .frame(width: 80, height: 80)
-                                            Text("Loop")
-                                                .foregroundColor(.white)
+                                        }
+                                        if(GKLocalPlayer.local.displayName == gameViewController.gameModel.players[1].displayName &&  gameViewController.gameModel.players[1].isbreak == true || GKLocalPlayer.local.displayName == gameViewController.gameModel.players[0].displayName &&  gameViewController.gameModel.players[0].isbreak == true || user.quantity[2] == 0)
+                                        {
+                                            ZStack{
+                                                Circle()
+                                                    .foregroundColor(.black.opacity(0.3))
+                                                    .frame(width: UIScreen.main.bounds.size.width*0.15, height: UIScreen.main.bounds.size.height*0.15)
+                                                    .padding()
+                                                
+                                                Image("loop")
+                                                    .opacity(0.2)
+                                                VStack{
+                                                    Spacer()
+                                                        .frame(height: UIScreen.main.bounds.height*0.044)
+                                                    HStack{
+                                                        Spacer()
+                                                            .frame(width: UIScreen.main.bounds.width*0.06)
+                                                        ZStack{
+                                                            Circle()
+                                                                .foregroundColor(.color2)
+                                                                .frame(width: UIScreen.main.bounds.size.width*0.055, height: UIScreen.main.bounds.size.height*0.055)
+                                                            
+                                                            Text("\(user.quantity[2])")
+                                                                .bold()
+                                                                .font(.system(size: min(UIScreen.main.bounds.size.width,UIScreen.main.bounds.size.height) * 0.035))
+                                                                .foregroundColor(.white)
+                                                                .shadow(color:.accentColor,radius: 4)
+                                                        }.padding(.leading)
+                                                    }
+                                                }
+                                            }
                                             
                                             //                                            Text("\(user.quantity[2])")
                                         }
                                         if power4 == true {
-                                            RoundedRectangle(cornerRadius: 20)
-                                            
-                                                .fill(Color.white)
-                                                .frame(width: 80, height: 80)
-                                                .scaleEffect(1.1)
-//                                            animation(.easeOut(duration:0.5),value : power4)
-                                            Text("Loop")
-                                                .foregroundColor(.color2)
+                                            ZStack{
+                                                Circle()
+                                                    .foregroundColor(.white)
+                                                    .shadow(color: .color2, radius: 14)
+                                                    .frame(width: UIScreen.main.bounds.size.width*0.15, height: UIScreen.main.bounds.size.height*0.15)
+                                                    .padding()
+                                                
+                                                Image("loop")
+                                                VStack{
+                                                    Spacer()
+                                                        .frame(height: UIScreen.main.bounds.height*0.044)
+                                                    HStack{
+                                                        Spacer()
+                                                            .frame(width: UIScreen.main.bounds.width*0.06)
+                                                        ZStack{
+                                                            Circle()
+                                                                .foregroundColor(.color2)
+                                                                .frame(width: UIScreen.main.bounds.size.width*0.055, height: UIScreen.main.bounds.size.height*0.055)
+                                                            
+                                                            Text("\(user.quantity[2])")
+                                                                .bold()
+                                                                .font(.system(size: min(UIScreen.main.bounds.size.width,UIScreen.main.bounds.size.height) * 0.035))
+                                                                .foregroundColor(.white)
+                                                                .shadow(color:.accentColor,radius: 4)
+                                                        }.padding(.leading)
+                                                    }
+                                                }
+                                            }.scaleEffect(1.3)
                                             
                                         }
                                     }
                                     
                                 }).disabled(disattivapot || gameViewController.gameModel.players[1].isbreak || gameViewController.gameModel.players[0].isbreak )
-                                Button(action: {info = true}, label: {Text("?")
-                                        .bold()
-                                        .foregroundColor(Color.white)
-                                        .font(.title)
-                                        .frame(alignment: .top)
-                                }).padding(.bottom,50)
+                            
                              
                                 
-                            }.padding(.leading,20)
-                            
+                            }.padding(.bottom,-UIScreen.main.bounds.size.height*0.05)
+                                Button(action: {info = true}, label: {
+                                ZStack{
+                                    
+                                RoundedRectangle(cornerRadius: 16)
+                                        .foregroundColor(.color2)
+                                        .frame(width: UIScreen.main.bounds.size.width*0.1, height: UIScreen.main.bounds.size.height*0.04, alignment: .center)
+                                Text("?")
+                                    .bold()
+                                    .foregroundColor(Color.white)
+                                    .font(.title)
+                                    .font(.system(size: min(UIScreen.main.bounds.size.width,UIScreen.main.bounds.size.height) * 0.095))
+                                    .frame(alignment: .center)
+                                }
+                                }).padding(.bottom,-UIScreen.main.bounds.size.height*0.02)
+                            }.padding(.bottom,UIScreen.main.bounds.size.height*0.02)
                             //                            }
                             
-                        }.padding(.horizontal)
+                            }}
 
                         .toolbar {
                             ToolbarItemGroup {
@@ -599,7 +891,7 @@ struct MatchView: View {
                 
                 if (info == true ){
                     infopower()
-                    .padding(.top,170)
+                        .padding(.top,UIScreen.main.bounds.size.height*0.27)
                 }
                 if (ohmamma == true){
                     EndingMatchView(foto:foto,foto1:foto1,user: $user, gameViewController: gameViewController, match: match)

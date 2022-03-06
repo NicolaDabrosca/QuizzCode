@@ -22,7 +22,11 @@ struct Scrolla: View {
         levels(lev:3,ricompensa: "Nu cazz",oggetti : [3,8,0,1]),
         levels(lev:4,ricompensa: "Nu cazz",oggetti : [0,10,5,0]),
         levels(lev:5,ricompensa: "Nu cazz",oggetti : [20,20,20,20]),
-        levels(lev:6,ricompensa: "Nu cazz",oggetti : [0,0,0,1])]
+        levels(lev:6,ricompensa: "Nu cazz",oggetti : [0,0,0,1]),
+        levels(lev:7,ricompensa: "Nu cazz",oggetti : [0,0,0,1]), levels(lev:8,ricompensa: "Nu cazz",oggetti : [0,0,0,1]),
+        levels(lev:9,ricompensa: "Nu cazz",oggetti : [0,0,0,1])
+    , levels(lev:10,ricompensa: "Nu cazz",oggetti : [0,0,0,1]),
+        levels(lev:11,ricompensa: "Nu cazz",oggetti : [0,0,0,1])]
     
     
     var body: some View {
@@ -36,7 +40,7 @@ struct Scrolla: View {
                         RoundedRectangle(cornerRadius: 20)
                             .foregroundColor(.white.opacity(1))
                             .frame(width: geometry.size.width * 0.01, height:geometry.size.height * 0.35)
-                            .padding(.trailing,geometry.size.width * 0.6)
+                            .padding(.trailing,geometry.size.width * 0.55)
                             .padding(.bottom,-80)
                         
                         HStack{
@@ -44,8 +48,27 @@ struct Scrolla: View {
                                 .foregroundColor(.white)
                                 .font(.system(size: min(UIScreen.main.bounds.size.width,UIScreen.main.bounds.size.height) * 0.07))
                                 .bold()
-                            
-                            if(livello >= lv.lev){
+                                .frame(width: UIScreen.main.bounds.size.width * 0.08)
+                              if (lv.lev < user.getUserStruct()[0].reward ){
+                                  
+                                  HStack(spacing: -UIScreen.main.bounds.size.width * 0.1){
+                                      
+                                      ZStack{
+                                          Circle()
+                                              .fill(Color(red: 242, green: 242, blue: 242))
+                                              .frame(width: geometry.size.width * 0.1, height: geometry.size.height * 0.1)
+                                          Image(systemName: "checkmark")
+                                              .foregroundColor(.blue)
+                                              .scaleEffect(1.5)
+                                      }.frame(width: UIScreen.main.bounds.size.width*0.2)
+                                      powerUp(lv:lv)
+                                          .scaleEffect(UIScreen.main.bounds.size.width * 0.002)
+                                          .frame(width: UIScreen.main.bounds.size.width*0.6, height: UIScreen.main.bounds.size.height/6)
+                                      
+                                  }.padding(.trailing,geometry.size.width * 0.15)
+                                  
+                              }
+                          else  if(livello >= lv.lev){
                                 
                                 HStack(spacing: -UIScreen.main.bounds.size.width * 0.1){
                                     
@@ -65,6 +88,7 @@ struct Scrolla: View {
                                 }.padding(.trailing,geometry.size.width * 0.15)
                                 
                             }
+                      
                             else{
                                 HStack(spacing: -UIScreen.main.bounds.size.width * 0.1){
                                     

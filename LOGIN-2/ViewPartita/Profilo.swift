@@ -8,7 +8,13 @@ struct Profilo: View {
     @State var userStruct:User.UserStruct
     @State private var selectedView = "Details"
     @State private var selected = ["Details", "Recents"]
-    let powerup = ["loop","break", "ifelse", "return"]
+    
+    public struct potenzia:Hashable{
+        var ogg:Int
+        var nome:String
+    }
+    let powerup:[potenzia] = [potenzia(ogg: 0, nome: "break"),potenzia(ogg: 1, nome: "ifelse"),potenzia(ogg: 2, nome: "loop"),potenzia(ogg: 3, nome: "return")]
+//    ["break","ifelse","loop", "return"]
     var body: some View {
             ZStack{
                 LinearGradient(gradient: Gradient(colors: [.black, .accentColor]), startPoint: .top, endPoint: .bottom)
@@ -26,7 +32,7 @@ struct Profilo: View {
                     Image(uiImage: foto)
                         .resizable()
                         .frame(width: 100, height: 100)
-                    
+                        .clipShape(Circle())
                     Text(userStruct.username)
                         .bold()
                         .foregroundColor(.white)
@@ -35,7 +41,7 @@ struct Profilo: View {
                         .resizable()
                         .frame(width: 35, height: 23)
                         
-                        Text("4")
+                        Text("\(userStruct.level)")
                             .bold()
                             .foregroundColor(.white)
                     }.frame(alignment:.center)
@@ -49,7 +55,7 @@ struct Profilo: View {
                             .frame(width: 54, height: 54)
                             .padding()
                                 
-                                Image(powerup)
+                                Image(powerup.nome)
                                 VStack{
                                     Spacer()
                                         .frame(height: 44)
@@ -61,7 +67,7 @@ struct Profilo: View {
                                     .foregroundColor(.color2)
                                     .frame(width: 22, height: 22)
                                     
-                                Text("10")
+                                        Text("\(user.quantity[powerup.ogg])")
                                 .bold()
                                 .font(.system(size: 14))
                                 .foregroundColor(.white)
@@ -124,9 +130,9 @@ struct Profilo: View {
                         
                     }.onAppear {
                         userStruct = user.getUserStruct()[0]
-                        
+            
                     }
-                }
+                }.padding(.bottom,UIScreen.main.bounds.size.height*0.1)
         }
 
     }}

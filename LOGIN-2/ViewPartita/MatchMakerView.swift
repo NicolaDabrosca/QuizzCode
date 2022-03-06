@@ -18,6 +18,7 @@ struct MatchMakerView: View {
     func didDismiss() {
         // Handle the dismissing action.
     }
+   @State var fototab:[String] = ["profilo2","corona2","home"]
     @State var foto:UIImage = UIImage()
     @State var tabSelected = 0
     let tabIcons = ["home", "livelli", "profileview"]
@@ -32,6 +33,7 @@ struct MatchMakerView: View {
                     .frame(alignment: .leading)
                     .padding(.bottom)
                 
+                    
                 ScrollView(.horizontal, showsIndicators: false){
                     HStack{
                         Button(action:{self.viewModel.showMatchMakerModal()
@@ -198,33 +200,38 @@ struct MatchMakerView: View {
                 
                 
             }.frame( maxHeight: .infinity, alignment: .center)
+//                .padding(.bottom,UIScreen.main.bounds.size.height*0.09)
                 .tabItem{
                     
-                    Image("home")
+                    Image("\(fototab[2])")
                         .resizable()
                         .frame(width: 30, height: 31)
+                        .scaleEffect(tabSelected == 0 ? 1.5 : 1)
                 }.tag(0)
                 .background(LinearGradient(gradient: Gradient(colors: [.black, .accentColor]), startPoint: .top, endPoint: .bottom)
                                 .edgesIgnoringSafeArea(.all))
             
-            LevelsView(livello: user.getUserStruct()[0].level).tabItem{
+            LevelsView(user:user,livello: user.getUserStruct()[0].level).tabItem{
                 
-                Image("livelli")
+                Image("\(fototab[1])")
                     .resizable()
                     .frame(width: 35, height: 23)
+                    .scaleEffect(tabSelected == 1 ? 1.5 : 1)
+
                 //                    .padding()
-                
+
             }.tag(1)
             
             Profilo(foto: foto, user:$user,userStruct: user.getUserStruct()[0]).tabItem{
                 
-                Image("profileview")
-                    .resizable()
+                Image("\(fototab[0])")
+//                    .resizable()
+
                 //                                .scaledToFit()
                     .frame(width: 26, height: 30)
                 //                    .padding()
-                
             }.tag(2)
+              
                 .background(LinearGradient(gradient: Gradient(colors: [.black, .accentColor]), startPoint: .top, endPoint: .bottom)
                                 .edgesIgnoringSafeArea(.all))
 
@@ -234,11 +241,33 @@ struct MatchMakerView: View {
             
             //            }
             
-        }.onAppear{print("EPICOO \(disconnessione))")
+        }
+
+        .onAppear{print("EPICOO \(disconnessione))")
             Task{     await foto = try  GKLocalPlayer.local.loadPhoto(for: .small)}
 
         }
-        
+        .onChange(of:tabSelected){_ in
+            print("tabbar \(tabSelected)")
+            if tabSelected == 2 {
+                fototab[0] = "profileview"
+                fototab[1] = "corona2"
+                fototab[2] = "spada2"
+            }
+            if tabSelected == 1{
+                fototab[0] = "profilo2"
+                fototab[1] = "livelli"
+                fototab[2] = "spada2"
+
+            }
+            if tabSelected == 0{
+                fototab[0] = "profilo2"
+                fototab[1] = "corona2"
+                fototab[2] = "home"
+
+
+            }
+        }
         .navigationBarHidden(true)
         .navigationTitle("")
         .navigationBarTitleDisplayMode(.inline)
@@ -274,3 +303,4 @@ struct MatchMakerView: View {
     
     
 }
+

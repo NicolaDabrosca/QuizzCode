@@ -27,7 +27,7 @@ struct EndingMatchView: View {
             LinearGradient(gradient: Gradient(colors: [.black, .accentColor, .blue]), startPoint: .top, endPoint: .bottom)
                 .edgesIgnoringSafeArea(.all)
        
-            VStack(alignment: .center, spacing: 1){
+            VStack(alignment: .center, spacing: -UIScreen.main.bounds.size.height*0.01){
 
                 Text("Last round")
                     .font(.title)
@@ -38,8 +38,9 @@ struct EndingMatchView: View {
                 HStack{
                     VStack{
                         Image(uiImage: foto)
-                            .scaleEffect(0.4)
-                            .frame(width: 100, height: 100)
+                            .scaleEffect(0.3)
+                            .frame(width: UIScreen.main.bounds.size.width*0.22, height: UIScreen.main.bounds.size.height*0.1)
+                            .clipShape(Circle())
 
                             .shadow(color: .white, radius: 5)
                          
@@ -68,8 +69,9 @@ struct EndingMatchView: View {
                     
                     VStack{
                         Image(uiImage: foto1)
-                            .scaleEffect(0.4)
-                            .frame(width: 100, height: 100)
+                            .scaleEffect(0.3)
+                            .frame(width: UIScreen.main.bounds.size.width*0.22, height: UIScreen.main.bounds.size.height*0.1)
+                            .clipShape(Circle())
 
                             .shadow(color: .white, radius: 5)
                            
@@ -93,21 +95,38 @@ struct EndingMatchView: View {
                         .frame(width: 380, height: 380)
                         .shadow(radius: 10)
                     VStack{
+                      
                         if GKLocalPlayer.local.displayName == gameViewController.gameModel.players[1].displayName && gameViewController.gameModel.players[1].punti  > gameViewController.gameModel.players[0].punti || GKLocalPlayer.local.displayName == gameViewController.gameModel.players[0].displayName && gameViewController.gameModel.players[0].punti  > gameViewController.gameModel.players[1].punti {
+                            VStack{
                         Text("Congratulations, you won!")
                             .bold()
                             .foregroundColor(.accentColor)
                             .font(.title2)
+                            if gameViewController.gameModel.fine == true {
+                                Text("L'Avversario si è arreso!")
+                                    .bold()
+                                    .foregroundColor(.accentColor)
+                                    .font(.title2)
+                            }
                         
                         Image("win")
-                        } else {
+                            }.padding(.top,20);
+                        }
+                        else {
+                            VStack{
                             Text("Congratulations, you lose!")
                                 .bold()
                                 .foregroundColor(.accentColor)
                                 .font(.title2)
+                            if gameViewController.gameModel.fine == true {
+                                Text("Ti sei arreso!")
+                                    .bold()
+                                    .foregroundColor(.accentColor)
+                                    .font(.title2)
+                            }
                             
                             Image("defeat")
-                        }
+                            }.padding(.top,20)}
                         
                         
                     }
@@ -153,6 +172,10 @@ struct EndingMatchView: View {
                 }
             })
                     Button(action:{
+//                        gameViewController.cambiadisconnect()
+                        print("PRIMA I AGGIORNARE: *************************")
+                    
+                        user.printUser()
                         aggiornaStats(user: user)
                         user.updateUserInfo()
                                             
