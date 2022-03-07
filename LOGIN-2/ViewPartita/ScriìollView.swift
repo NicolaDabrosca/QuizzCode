@@ -22,11 +22,11 @@ struct Scrolla: View {
         levels(lev:3,ricompensa: "Nu cazz",oggetti : [3,8,0,1]),
         levels(lev:4,ricompensa: "Nu cazz",oggetti : [0,10,5,0]),
         levels(lev:5,ricompensa: "Nu cazz",oggetti : [20,20,20,20]),
-        levels(lev:6,ricompensa: "Nu cazz",oggetti : [0,0,0,1]),
-        levels(lev:7,ricompensa: "Nu cazz",oggetti : [0,0,0,1]), levels(lev:8,ricompensa: "Nu cazz",oggetti : [0,0,0,1]),
-        levels(lev:9,ricompensa: "Nu cazz",oggetti : [0,0,0,1])
-    , levels(lev:10,ricompensa: "Nu cazz",oggetti : [0,0,0,1]),
-        levels(lev:11,ricompensa: "Nu cazz",oggetti : [0,0,0,1])]
+        levels(lev:6,ricompensa: "Nu cazz",oggetti : [5,5,5,5]),
+        levels(lev:7,ricompensa: "Nu cazz",oggetti : [6,6,6,6]), levels(lev:8,ricompensa: "Nu cazz",oggetti : [0,0,0,1]),
+        levels(lev:9,ricompensa: "Nu cazz",oggetti : [7,7,7,7])
+    , levels(lev:10,ricompensa: "Nu cazz",oggetti : [0,10,0,10]),
+        levels(lev:11,ricompensa: "Nu cazz",oggetti : [10,0,10,0])]
     
     
     var body: some View {
@@ -75,7 +75,7 @@ struct Scrolla: View {
                                     
                                     ZStack{
                                         Circle()
-                                            .fill(Color.blue)
+                                            .fill(Color.white)
                                             .frame(width: geometry.size.width * 0.1, height: geometry.size.height * 0.1)
                                         sblocca(lv: lv, user: user)
                                             .scaleEffect(UIScreen.main.bounds.size.width * 0.001)
@@ -212,7 +212,7 @@ struct sblocca:View{
     
     // Increase number
     
-    @State private var iconColor = Color(.white)
+    @State private var iconColor = Color.blue
     
     @State var lv: levels
     @State var user:User
@@ -270,7 +270,7 @@ struct sblocca:View{
                 user.updateReward()
             
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                iconColor = Color(.green)
+                iconColor = Color.color2
                 scaleHeart = 1
                 heart = Image(systemName: "checkmark")}
             

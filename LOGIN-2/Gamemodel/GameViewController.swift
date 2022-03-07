@@ -58,7 +58,11 @@ sendData()
             if player == .one, self.gameModel.time >= 1 {
                 self.gameModel.time -= 1
                 self.sendData()
+                
+           
             }
+            self.sendData()
+
         })
     }
     
@@ -241,14 +245,14 @@ print("Break\(self.gameModel.players[localPlayer.index()].isbreak)")
                     
                 self.gameModel.players[0].risposto = false
                     self.gameModel.players[1].risposto = false}
-                DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+         
                     if (self.gameModel.count == 9 ||  self.gameModel.fine == true)  {
 //                    GKMatchManager.shared.cancel()
 //                    print("qua finisce\(disconnected)")
                     self.disconnected = true
                         print( "Poor gabbiano\(self.disconnected = true)")
 //                    print("qua finisce\(disconnected)")
-                }
+                
            
                 }
             }

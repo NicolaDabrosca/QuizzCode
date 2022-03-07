@@ -153,14 +153,16 @@ struct MatchView: View {
                                 VStack{
                                     if gameViewController.gameModel.players[0].displayName == GKLocalPlayer.local.displayName{
                                         Image(uiImage: foto)
-                                            .scaleEffect(0.3)
-                                          
-                                            .frame(width: UIScreen.main.bounds.size.width*0.22, height: UIScreen.main.bounds.size.height*0.1)
                                             .clipShape(Circle())
+
+                                            .scaleEffect(0.3)
+
+                                            .frame(width: UIScreen.main.bounds.size.width*0.23, height: UIScreen.main.bounds.size.height*0.1)
                                     }else{Image(uiImage: foto1)
-                                            .scaleEffect(0.3)
-                                            .frame(width: UIScreen.main.bounds.size.width*0.22, height: UIScreen.main.bounds.size.height*0.1)
                                             .clipShape(Circle())
+
+                                            .scaleEffect(0.3)
+                                            .frame(width: UIScreen.main.bounds.size.width*0.23, height: UIScreen.main.bounds.size.height*0.1)
                                     }
                                       
                                      
@@ -200,14 +202,16 @@ struct MatchView: View {
                                 VStack{
                                     if gameViewController.gameModel.players[0].displayName == GKLocalPlayer.local.displayName{
                                         Image(uiImage: foto1)
+                                            .clipShape(Circle())
+
                                             .scaleEffect(0.3)
                                     
-                                            .frame(width: UIScreen.main.bounds.size.width*0.22, height: UIScreen.main.bounds.size.height*0.1)
-                                            .clipShape(Circle())
+                                            .frame(width: UIScreen.main.bounds.size.width*0.23, height: UIScreen.main.bounds.size.height*0.1)
                                     }else{Image(uiImage: foto)
                                             .scaleEffect(0.3)
-                                            .frame(width: UIScreen.main.bounds.size.width*0.22, height: UIScreen.main.bounds.size.height*0.1)
                                             .clipShape(Circle())
+
+                                            .frame(width: UIScreen.main.bounds.size.width*0.23, height: UIScreen.main.bounds.size.height*0.1)
                                     }
                                     Text(gameViewController.gameModel.players[1].displayName)
                                         .bold()
@@ -404,6 +408,7 @@ struct MatchView: View {
                                     
                                 }
                             .padding(.top,UIScreen.main.bounds.size.height * 0.2)
+                                Spacer(minLength: UIScreen.main.bounds.size.height * 0.1)
 //
 //
 //                            Powerup
@@ -426,7 +431,7 @@ struct MatchView: View {
                                             ZStack{
                                                 Circle()
                                                     .foregroundColor(.white)
-                                                    .frame(width: UIScreen.main.bounds.size.width*0.15, height: UIScreen.main.bounds.size.height*0.15)
+                                                    .frame(width: UIScreen.main.bounds.size.width*0.15, height: UIScreen.main.bounds.size.height*0.08)
                                                     .padding()
                                                 
                                                 Image("return")
@@ -457,7 +462,7 @@ struct MatchView: View {
                                             ZStack{
                                                 Circle()
                                                     .foregroundColor(.black.opacity(0.3))
-                                                    .frame(width: UIScreen.main.bounds.size.width*0.15, height: UIScreen.main.bounds.size.height*0.15)
+                                                    .frame(width: UIScreen.main.bounds.size.width*0.15, height: UIScreen.main.bounds.size.height*0.08)
                                                     .padding()
                                                 
                                                 Image("return")
@@ -491,7 +496,7 @@ struct MatchView: View {
                                                 Circle()
                                                     .foregroundColor(.white)
                                                     .shadow(color: .color2, radius: 14)
-                                                    .frame(width: UIScreen.main.bounds.size.width*0.15, height: UIScreen.main.bounds.size.height*0.15)
+                                                    .frame(width: UIScreen.main.bounds.size.width*0.15, height: UIScreen.main.bounds.size.height*0.08)
                                                     .padding()
                                                 
                                                 Image("return")
@@ -530,7 +535,7 @@ struct MatchView: View {
                                         ZStack{
                                             Circle()
                                                 .foregroundColor(.white)
-                                                .frame(width: UIScreen.main.bounds.size.width*0.15, height: UIScreen.main.bounds.size.height*0.15)
+                                                .frame(width: UIScreen.main.bounds.size.width*0.15, height: UIScreen.main.bounds.size.height*0.08)
                                                 .padding()
                                             
                                             Image("ifelse")
@@ -561,7 +566,7 @@ struct MatchView: View {
                                             ZStack{
                                                 Circle()
                                                     .foregroundColor(.black.opacity(0.3))
-                                                    .frame(width: UIScreen.main.bounds.size.width*0.15, height: UIScreen.main.bounds.size.height*0.15)
+                                                    .frame(width: UIScreen.main.bounds.size.width*0.15, height: UIScreen.main.bounds.size.height*0.08)
                                                     .padding()
                                                 
                                                 Image("ifelse")
@@ -596,7 +601,7 @@ struct MatchView: View {
                                                 Circle()
                                                     .foregroundColor(.white)
                                                     .shadow(color: .color2, radius: 14)
-                                                    .frame(width: UIScreen.main.bounds.size.width*0.15, height: UIScreen.main.bounds.size.height*0.15)
+                                                    .frame(width: UIScreen.main.bounds.size.width*0.15, height: UIScreen.main.bounds.size.height*0.08)
                                                     .padding()
                                                 
                                                 Image("ifelse")
@@ -640,7 +645,7 @@ struct MatchView: View {
                                             ZStack{
                                                 Circle()
                                                     .foregroundColor(.white)
-                                                    .frame(width: UIScreen.main.bounds.size.width*0.15, height: UIScreen.main.bounds.size.height*0.15)
+                                                    .frame(width: UIScreen.main.bounds.size.width*0.15, height: UIScreen.main.bounds.size.height*0.08)
                                                     .padding()
                                                 
                                                 Image("break")
@@ -672,7 +677,7 @@ struct MatchView: View {
                                             ZStack{
                                                 Circle()
                                                     .foregroundColor(.black.opacity(0.3))
-                                                    .frame(width: UIScreen.main.bounds.size.width*0.15, height: UIScreen.main.bounds.size.height*0.15)
+                                                    .frame(width: UIScreen.main.bounds.size.width*0.15, height: UIScreen.main.bounds.size.height*0.08)
                                                     .padding()
                                                 
                                                 Image("break")
@@ -706,7 +711,7 @@ struct MatchView: View {
                                                 Circle()
                                                     .foregroundColor(.white)
                                                     .shadow(color: .color2, radius: 14)
-                                                    .frame(width: UIScreen.main.bounds.size.width*0.15, height: UIScreen.main.bounds.size.height*0.15)
+                                                    .frame(width: UIScreen.main.bounds.size.width*0.15, height: UIScreen.main.bounds.size.height*0.08)
                                                     .padding()
                                                 
                                                 Image("break")
@@ -748,7 +753,7 @@ struct MatchView: View {
                                             ZStack{
                                                 Circle()
                                                     .foregroundColor(.white)
-                                                    .frame(width: UIScreen.main.bounds.size.width*0.15, height: UIScreen.main.bounds.size.height*0.15)
+                                                    .frame(width: UIScreen.main.bounds.size.width*0.15, height: UIScreen.main.bounds.size.height*0.08)
                                                     .padding()
                                                 
                                                 Image("loop")
@@ -779,7 +784,7 @@ struct MatchView: View {
                                             ZStack{
                                                 Circle()
                                                     .foregroundColor(.black.opacity(0.3))
-                                                    .frame(width: UIScreen.main.bounds.size.width*0.15, height: UIScreen.main.bounds.size.height*0.15)
+                                                    .frame(width: UIScreen.main.bounds.size.width*0.15, height: UIScreen.main.bounds.size.height*0.08)
                                                     .padding()
                                                 
                                                 Image("loop")
@@ -812,7 +817,7 @@ struct MatchView: View {
                                                 Circle()
                                                     .foregroundColor(.white)
                                                     .shadow(color: .color2, radius: 14)
-                                                    .frame(width: UIScreen.main.bounds.size.width*0.15, height: UIScreen.main.bounds.size.height*0.15)
+                                                    .frame(width: UIScreen.main.bounds.size.width*0.15, height: UIScreen.main.bounds.size.height*0.08)
                                                     .padding()
                                                 
                                                 Image("loop")
@@ -858,8 +863,8 @@ struct MatchView: View {
                                     .font(.system(size: min(UIScreen.main.bounds.size.width,UIScreen.main.bounds.size.height) * 0.095))
                                     .frame(alignment: .center)
                                 }
-                                }).padding(.bottom,-UIScreen.main.bounds.size.height*0.02)
-                            }.padding(.bottom,UIScreen.main.bounds.size.height*0.02)
+                                }).padding(.bottom,-UIScreen.main.bounds.size.height*0.03)
+                            }.padding(.bottom,UIScreen.main.bounds.size.height*0.05)
                             //                            }
                             
                             }}
