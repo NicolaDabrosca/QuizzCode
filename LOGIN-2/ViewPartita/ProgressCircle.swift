@@ -7,7 +7,10 @@
 
 import Foundation
 import SwiftUI
+import GameKit
+import GameKitUI
 struct ProgressCircle: View {
+
     var body: some View {
         ZStack {
             //            if self.backgroundEnabled {
@@ -21,14 +24,17 @@ struct ProgressCircle: View {
                 .font(.system(size: 35, weight: .bold, design: .default))
             
             Circle()
-                .trim(from: 0, to: CGFloat(self.value/60))
+
+                .trim(from: 0, to: CGFloat(self.value/20))
                 .stroke(style: self.style.strokeStyle(lineWidth: self.lineWidth))
-            
-                .animation(.easeOut(duration: 10), value:true)
+
+                .animation(.linear(duration: 0.01), value:true)
+
+//                .animation(.easeOut(duration: 10), value:true)
                 .foregroundColor(Color.white)
                 .opacity(0.8)
                 .rotationEffect(Angle(degrees: -90))
-                .animation(.easeOut(duration: 10), value:true)
+//                .animation(.easeOut(duration: 10), value:true)
             
             //                .animation(.easeIn)
         }
@@ -58,7 +64,8 @@ struct ProgressCircle: View {
     private let foregroundColor: Color
     private let lineWidth: CGFloat
     
-    init(value: Double,
+    init(
+        value: Double,
          maxValue: Double,
          style: Stroke = .line,
          backgroundEnabled: Bool = true,
@@ -76,7 +83,6 @@ struct ProgressCircle: View {
         self.backgroundColor = backgroundColor
         self.foregroundColor = foregroundColor
         self.lineWidth = lineWidth
-        
     }
 }
 

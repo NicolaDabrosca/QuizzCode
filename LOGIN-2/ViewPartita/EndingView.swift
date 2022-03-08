@@ -37,13 +37,22 @@ struct EndingMatchView: View {
                 
                 HStack{
                     VStack{
+                        if gameViewController.gameModel.players[0].displayName == GKLocalPlayer.local.displayName{
+
                         Image(uiImage: foto)
-                            .scaleEffect(0.3)
-                            .frame(width: UIScreen.main.bounds.size.width*0.22, height: UIScreen.main.bounds.size.height*0.1)
                             .clipShape(Circle())
 
+                            .scaleEffect(0.3)
+                            .frame(width: UIScreen.main.bounds.size.width*0.22, height: UIScreen.main.bounds.size.height*0.1)
+
                             .shadow(color: .white, radius: 5)
-                         
+                        }else{  Image(uiImage: foto1)
+                                .clipShape(Circle())
+
+                                .scaleEffect(0.3)
+                                .frame(width: UIScreen.main.bounds.size.width*0.22, height: UIScreen.main.bounds.size.height*0.1)
+
+                                .shadow(color: .white, radius: 5)}
                         Text("\(gameViewController.gameModel.players[0].displayName)")
                             .bold()
                             .foregroundColor(.white)
@@ -68,13 +77,24 @@ struct EndingMatchView: View {
                         .frame(width: 60)
                     
                     VStack{
-                        Image(uiImage: foto1)
-                            .scaleEffect(0.3)
-                            .frame(width: UIScreen.main.bounds.size.width*0.22, height: UIScreen.main.bounds.size.height*0.1)
+                        if gameViewController.gameModel.players[1].displayName == GKLocalPlayer.local.displayName{
+
+                        Image(uiImage: foto)
                             .clipShape(Circle())
 
+                            .scaleEffect(0.3)
+                            .frame(width: UIScreen.main.bounds.size.width*0.22, height: UIScreen.main.bounds.size.height*0.1)
+
                             .shadow(color: .white, radius: 5)
-                           
+                        }else{
+                            Image(uiImage: foto1)
+                                .clipShape(Circle())
+
+                                .scaleEffect(0.3)
+                                .frame(width: UIScreen.main.bounds.size.width*0.22, height: UIScreen.main.bounds.size.height*0.1)
+
+                                .shadow(color: .white, radius: 5)
+                        }
                         Text("\(gameViewController.gameModel.players[1].displayName )")
                             .bold()
                             .foregroundColor(.white)
@@ -134,14 +154,14 @@ struct EndingMatchView: View {
                     print("APPARE ENDING VIEW *********************")
                     print("")
                     user.printUser()
-                    
+                    aggiornaStats(user: user)
+                    user.updateUserInfo()
                 }
                 
                 VStack{
                     Button(action:{
                         
-                            aggiornaStats(user: user)
-                            user.updateUserInfo()
+                            
                         
                             self.viewModel.showMatchMakerModal()
                             GKMatchManager.shared.cancel()
@@ -175,9 +195,7 @@ struct EndingMatchView: View {
 //                        gameViewController.cambiadisconnect()
                         print("PRIMA I AGGIORNARE: *************************")
                     
-                        user.printUser()
-                        aggiornaStats(user: user)
-                        user.updateUserInfo()
+                      
                                             
                         GKMatchManager.shared.cancel()
                

@@ -39,6 +39,9 @@ struct LevelsView: View {
                     .padding(.bottom,UIScreen.main.bounds.size.height * 0.22)
 
             } .frame(width:UIScreen.main.bounds.size.width, height:UIScreen.main.bounds.size.height)
+                .onAppear {
+                    user.loginUser()
+                }
         }.navigationBarBackButtonHidden(true)
         
     }

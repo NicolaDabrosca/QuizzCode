@@ -11,7 +11,6 @@ import SwiftUI
 import GameKitUI
 class GameViewController: UIViewController , ObservableObject{
     
- 
     @State var vattene:Bool = false
     var match: GKMatch?
     public var timer: Timer!
@@ -25,11 +24,12 @@ class GameViewController: UIViewController , ObservableObject{
     }
     
     public func punisciQuitter(i:Int,j:Int) {
-       gameModel.players[i].punti = gameModel.players[j].punti - 1
+//       gameModel.players[i].punti = gameModel.players[j].punti - 1
         self.gameModel.fine = true
 sendData()
 
     }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -41,6 +41,23 @@ sendData()
         if getLocalPlayerType() == .one, timer == nil {
             self.initTimer()
         }
+    }
+    public func debugga(){
+        
+            if(self.gameModel.players[0].risposto == true && self.gameModel.players[1].risposto == true || self.gameModel.time == 0){
+                self.gameModel.time = 20
+                self.gameModel.count += 1
+               
+                    self.gameModel.players[1].isbreak = false
+                    self.gameModel.players[0].isbreak = false
+                self.gameModel.players[1].ifelse = false
+                self.gameModel.players[0].loopo = false
+                self.gameModel.players[1].loopo = false
+                    self.gameModel.players[0].ifelse = false
+                
+            self.gameModel.players[0].risposto = false
+                self.gameModel.players[1].risposto = false}
+        
     }
     public func  cambiadisconnect(){
   
@@ -278,9 +295,21 @@ extension GameViewController: GKMatchDelegate {
                 case GKPlayerConnectionState.disconnected:
             
                     DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                        GKMatchManager.shared.cancel()
-                     disconnessione = true
-print("CANCELL : \(disconnessione)")
+//                        GKMatchManager.shared.cancel()
+//                     disconnessione = true
+//print("CANCELL : \(disconnessione)")
+                        print("qualcuno ha quittato")
+                        self.disconnected = true
+                        self.gameModel.fine = true
+                        self.sendData()
+                      if  GKLocalPlayer.local.displayName == self.gameModel.players[0].displayName{
+                            self.gameModel.players[1].punti = -10
+
+                        }
+                        else{
+                            self.gameModel.players[0].punti = -10
+
+                        }
                     }
 
                 default:

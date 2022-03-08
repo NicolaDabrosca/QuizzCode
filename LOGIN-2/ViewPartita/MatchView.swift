@@ -46,7 +46,7 @@ struct MatchView: View {
     @State  var correct:Bool = false
     @State  var disattivapot:Bool = false
     @State var naccCristo = [false,false,false,false]
-    @State var progress:CGFloat = 60
+    @State var progress:CGFloat = 20
     @State var info:Bool = false
     @State var attaccato:Bool = false
     @State var aggiorna:Color = .white
@@ -83,7 +83,8 @@ struct MatchView: View {
     public func tempo() {
         timero = Timer.scheduledTimer(withTimeInterval: 0.01, repeats: true, block: { (timero) in
             progress -= 0.01
-            
+            gameViewController.debugga()
+            print("debugga")
         }
         )}
    
@@ -126,17 +127,29 @@ struct MatchView: View {
                         VStack{
                         VStack {
                             //                            ROUND CON COUNT
-                               
-                                
+                            HStack(){
+                        
                                 Button {
                                     showingAlert = true
                          
                                 } label: {
                                     Image(systemName: "flag.fill")
                                         .foregroundColor(.white)
+                                        .scaleEffect(1.2)
+
+                                }
+                                Spacer(minLength:UIScreen.main.bounds.size.width*0.5)
+                                    .frame(width: UIScreen.main.bounds.size.width*0.7)
+                                Button {
+                                    info = true
+                                } label: {
+                                    Image(systemName: "info.circle.fill")
+                                        .foregroundColor(.white)
                                         .padding(.leading)
-                                }.padding(.leading, UIScreen.main.bounds.size.width * 0.85)
-                                
+                                        .scaleEffect(1.5)
+                                }
+//                                .padding(.leading, -UIScreen.main.bounds.size.width * 0.85)
+                            }
                                 .alert("Sei sicuro di voler abbandonare?", isPresented: $showingAlert) {
                                             Button("No", role: .cancel) { }
                                     Button("Quit"){           ohmamma.toggle()
@@ -145,7 +158,9 @@ struct MatchView: View {
                                         if(i == 1){
                                             j = 0
                                         }
-                                        gameViewController.punisciQuitter(i: i, j: j)}
+                                        gameViewController.punisciQuitter(i: i, j: j)
+                                        
+                                    }
                                         }
                             
                             //                            UTENTI E PUNTI
@@ -208,8 +223,9 @@ struct MatchView: View {
                                     
                                             .frame(width: UIScreen.main.bounds.size.width*0.23, height: UIScreen.main.bounds.size.height*0.1)
                                     }else{Image(uiImage: foto)
-                                            .scaleEffect(0.3)
                                             .clipShape(Circle())
+
+                                            .scaleEffect(0.3)
 
                                             .frame(width: UIScreen.main.bounds.size.width*0.23, height: UIScreen.main.bounds.size.height*0.1)
                                     }
@@ -247,12 +263,16 @@ struct MatchView: View {
                             
                             ZStack{
                                 RoundedRectangle(cornerRadius: 20)
-                                    .foregroundColor(.white)
+//                                    .foregroundColor(.white.opacity(0.3))
+                                                                    .foregroundColor(.white)
+
                                     .frame(width: UIScreen.main.bounds.size.width*0.9, height: UIScreen.main.bounds.size.height*0.09)
                                     .shadow(radius: 10)
                                 
                                 Text(domande.questions[gameViewController.gameModel.count].text)
-                                    .foregroundColor(.accentColor)
+//                                    .foregroundColor(.white)
+                                                                    .foregroundColor(.accentColor)
+
                                     .bold()
                                     .font(.title2)
                                     .minimumScaleFactor(0.0003)
@@ -323,6 +343,7 @@ struct MatchView: View {
                                                     //                                                //                                                    DemoView(testo: answers.answer,correct:correct)
                                                     RoundedRectangle(cornerRadius: 20)
                                                         .padding(4)
+                                                    
                                                         .foregroundColor( naccCristo[answers.playing1] ? Color.green : Color.white)
                                                         .animation(.easeInOut(duration: 0.5), value:  naccCristo[answers.playing1])
                                                         .frame(width: UIScreen.main.bounds.size.width*0.89, height: UIScreen.main.bounds.size.height*0.08)
@@ -337,6 +358,7 @@ struct MatchView: View {
                                                                .frame(width: UIScreen.main.bounds.size.width*0.88, height: UIScreen.main.bounds.size.height*0.08)
                                                     }
                                                     .foregroundColor( naccCristo[answers.playing1] ? Color.white : Color.accentColor )
+                                             
                                                     if disattiva == true {
                                                         RoundedRectangle(cornerRadius: 20)
                                                             .stroke(Color.green, lineWidth: 4)
@@ -382,6 +404,7 @@ struct MatchView: View {
                                              ZStack{
                                                     
                                                     //
+                                                 
                                                     RoundedRectangle(cornerRadius: 20)
                                                         .padding(4)
                                                         .foregroundColor(naccCristo[answers.playing1] ? Color.red : Color.white)
@@ -399,7 +422,9 @@ struct MatchView: View {
                                                     .foregroundColor(naccCristo[answers.playing1] == true ? Color.white : Color.accentColor )
                                                     //                                                    Text(answers.answer)
                                                 }.disabled(disattiva)
+                                                    
                                             }).disabled(disattiva)
+                                                
                                         }
                                         //
                                         
@@ -850,20 +875,20 @@ struct MatchView: View {
                              
                                 
                             }.padding(.bottom,-UIScreen.main.bounds.size.height*0.05)
-                                Button(action: {info = true}, label: {
-                                ZStack{
-                                    
-                                RoundedRectangle(cornerRadius: 16)
-                                        .foregroundColor(.color2)
-                                        .frame(width: UIScreen.main.bounds.size.width*0.1, height: UIScreen.main.bounds.size.height*0.04, alignment: .center)
-                                Text("?")
-                                    .bold()
-                                    .foregroundColor(Color.white)
-                                    .font(.title)
-                                    .font(.system(size: min(UIScreen.main.bounds.size.width,UIScreen.main.bounds.size.height) * 0.095))
-                                    .frame(alignment: .center)
-                                }
-                                }).padding(.bottom,-UIScreen.main.bounds.size.height*0.03)
+//                                Button(action: {info = true}, label: {
+//                                ZStack{
+//
+//                                RoundedRectangle(cornerRadius: 16)
+//                                        .foregroundColor(.color2)
+//                                        .frame(width: UIScreen.main.bounds.size.width*0.1, height: UIScreen.main.bounds.size.height*0.04, alignment: .center)
+//                                Text("?")
+//                                    .bold()
+//                                    .foregroundColor(Color.white)
+//                                    .font(.title)
+//                                    .font(.system(size: min(UIScreen.main.bounds.size.width,UIScreen.main.bounds.size.height) * 0.095))
+//                                    .frame(alignment: .center)
+//                                }
+//                                }).padding(.bottom,-UIScreen.main.bounds.size.height*0.03)
                             }.padding(.bottom,UIScreen.main.bounds.size.height*0.05)
                             //                            }
                             

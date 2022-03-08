@@ -270,7 +270,7 @@ struct sblocca:View{
                 user.updateReward()
             
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                iconColor = Color.color2
+                iconColor = Color.blue
                 scaleHeart = 1
                 heart = Image(systemName: "checkmark")}
             

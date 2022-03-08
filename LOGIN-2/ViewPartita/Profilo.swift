@@ -129,6 +129,7 @@ struct Profilo: View {
                            
                         
                     }.onAppear {
+                        user.loginUser()
                         userStruct = user.getUserStruct()[0]
             
                     }
